@@ -1,3 +1,5 @@
 CurrentTimerIntent get current timer
 CurrentTimerIntent current timer
 CurrentTimerIntent how long is on the timer
+GetTimersRange how I spent my time today
+GetTimersRange today

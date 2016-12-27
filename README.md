@@ -16,6 +16,7 @@ Once you've enabled testing on the skill in the developer console it should be i
 The following utterances should now work:
 ```
 Alexa, ask Toggl for current timer
+Alexa, ask Toggl how I spent my time today
 ```
 
 ## Roadmap / Future Features

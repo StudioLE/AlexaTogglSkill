@@ -1,0 +1,29 @@
+{
+  "name": "AlexaTogglSkill",
+  "version": "0.0.1-beta",
+  "description": "An Alexa skill to interact with Toggl",
+  "keywords": [
+    "alexa",
+    "skill",
+    "toggl"
+  ],
+  "author": {
+    "name": "Laurence Elsdon",
+    "email": "hi@studiole.uk",
+    "url": "https://studiole.uk"
+  },
+  "license": "Apache-2.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "alexa-sdk": "^1.0.6",
+    "moment": "^2.17.1"
+  },
+  "devDependencies": {
+    "aws-lambda-mock-context": "^3.0.1",
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  }
+}

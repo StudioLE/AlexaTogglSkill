@@ -1,0 +1,16 @@
+{
+  "intents": [
+    {
+      "intent": "CurrentTimerIntent"
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    }
+  ]
+}

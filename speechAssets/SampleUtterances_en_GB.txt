@@ -1,0 +1,3 @@
+CurrentTimerIntent get current timer
+CurrentTimerIntent current timer
+CurrentTimerIntent how long is on the timer

@@ -49,6 +49,6 @@ describe('CurrentTimerIntent', function() {
   })
 
   after(function(){
-    console.log('Output: ', speechResponse)
+    // console.log('Output: ', speechResponse)
   })
 })

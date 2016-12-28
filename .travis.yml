@@ -15,7 +15,7 @@ deploy:
   provider: lambda
   region: 'eu-west-1'
   function_name: 'toggl'
-  role: 'arn:aws:lambda:eu-west-1:607729171175:function:toggl'
+  role: 'arn:aws:iam::607729171175:role/lambda_basic_execution'
   handler_name: 'index.handler'
   access_key_id: 'AKIAIB4VMJAUNKUO7FGQ'
   secret_access_key:

@@ -8,15 +8,3 @@ before_script:
 
 script:
   - npm test
-
-deploy:
-  skip_cleanup: true
-  zip: './'
-  provider: lambda
-  region: 'eu-west-1'
-  function_name: 'toggl'
-  role: 'arn:aws:iam::607729171175:role/lambda_basic_execution'
-  handler_name: 'index.handler'
-  access_key_id: 'AKIAIB4VMJAUNKUO7FGQ'
-  secret_access_key:
-    secure: BMf6yVtLXkRX1d9/VkLRmD0MTCwe03DDCnNtuAy7zakhF4w5ljxJIP1fMkMtKK4LrN+cjs0ylZjuycZMfknfY5KZbjG7rPJNqoEyqRd/VISflL8eOtSuIB/IbAttGAjQWflh3VIWj9FGZj0WIJGl02vlrW/FQCUHTyCk0rEdgYd4F71SrXTuNgFvj1VjdJbAS7sIFOaJUnce9QxGwsj0N9gOBkIaMYIyjFbRnNy/9IILrCQb9YWRyDYTACkN2wrjap8p316Dg7BZwhqgUD++N/GlE2ZXF5q11a7AtGqnE1m5XyBBFfHKfmaHMyG9CTBqd/PCw/AjMh8sO/kNYmbtjnOgC3+Pp1Nz/Dodfmc3cmIoZDLFdSKT6VeOxYoVLfhk024hoHIveE+Pvdo5+/rIsuPPET5LNejQ306JvxLJk0QbsNx/X7Gs2o4ZXfOGJiRWaWskNiYQzIAC0z7LYrL/4GxkIShqgQrBBAy/TQtpoezTvPLbuH1AqkixKAzEu+S6ABFFHphbp9bvH6sTxT2YqoMo39S6EBhWXLu0vsdjwE+0pi8G4yCVEGiBlOmD/jh3aqdMNRm03RxyMQr7lLgw8yT301nq4XGrAWPaeC5wovcgyRQiwYyXOZ35eOHLZfSOiY17/hF6h78tcUXwL361T8WtJy/Sl2/1fCbzsFspkeo=

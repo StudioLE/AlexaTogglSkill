@@ -1,6 +1,7 @@
 'use strict'
 var Alexa = require('alexa-sdk')
 var moment = require('moment')
+var humanizeDuration = require('humanize-duration')
 var url = require('url')
 var _ = require('lodash')
 var async = require('async')
@@ -19,6 +20,18 @@ exports.lang = {
     }
   }
 }
+
+// moment().calender() only show day, not time
+moment.updateLocale('en', {
+  calendar: {
+    sameDay: '[Today]',
+    nextDay: '[Tomorrow]',
+    nextWeek: 'dddd',
+    lastDay: '[Yesterday]',
+    lastWeek: '[Last] dddd',
+    sameElse: 'DD/MM/YYYY'
+  }
+})
 
 exports.handler = function(event, context, callback) {
   var alexa = Alexa.handler(event, context)
@@ -54,12 +67,16 @@ var handlers = {
       self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
     })
   },
-  'GetTimersRange': function() {
+  'GetTimersRange': function(intent, session, response) {
     var self = this
 
+    // Date could be any of the following:
+    // https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/built-in-intent-ref/slot-type-reference#date
+    var date = this.event.request.intent.slots.Date.value
+
     var range = {
-      start_date: moment().subtract(1, 'days').format(),
-      end_date: moment().format()
+      start_date: moment(date).format(),
+      end_date: moment(date).add(1, 'days').format()
     }
 
     var req = url.format({
@@ -98,13 +115,15 @@ var handlers = {
           duration: total
         }
       })
+
       var speech = []
+
       async.each(projects, function(project, callback) {
         // Make a request to the Toggl API
         // @todo A get request in a loop... May want to convert to promises instead...
         toggl.get('projects/' + project.pid, function(err, json) {
           if(err) return callback(err)
-          speech.push(json.data.name + ' for ' + moment.duration(project.duration, 'seconds').humanize())
+          speech.push(humanizeDuration(project.duration * 1000, { delimiter: ' ', largest: 2 }) + ' on ' + json.data.name)
           callback()
         })
       }, function(err) {
@@ -112,7 +131,7 @@ var handlers = {
         if(err) return console.error(err)
 
         // Create speech output
-        var speechOutput = 'You have been working on ' + toSentence(speech) + ' in the last 24 hours.'
+        var speechOutput = moment(date).calendar() + ', you spent ' + toSentence(speech)
 
         self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
       })

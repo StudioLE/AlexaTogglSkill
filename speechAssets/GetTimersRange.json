@@ -17,7 +17,12 @@
     "type": "IntentRequest",
     "requestId": "amzn1.echo-api.request.[unique-value-here]",
     "intent": {
-      "slots": {},
+      "slots": {
+        "Date": {
+          "name": "Date",
+          "value": "2016-12-28"
+        }
+      },
       "name": "GetTimersRange"
     }
   },

@@ -4,6 +4,15 @@
       "intent": "CurrentTimerIntent"
     },
     {
+      "intent": "GetTimersRange",
+      "slots": [
+        {
+          "name": "Date",
+          "type": "AMAZON.DATE"
+        }
+      ]
+    },
+    {
       "intent": "AMAZON.HelpIntent"
     },
     {

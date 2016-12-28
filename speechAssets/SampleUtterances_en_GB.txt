@@ -1,5 +1,11 @@
-CurrentTimerIntent get current timer
-CurrentTimerIntent current timer
-CurrentTimerIntent how long is on the timer
-GetTimersRange how I spent my time today
-GetTimersRange today
+CurrentTimerIntent current
+CurrentTimerIntent present
+CurrentTimerIntent latest
+GetTimersRange {Date}
+GetTimersRange how I spent {Date}
+GetTimersRange how I spent my time {Date}
+GetTimersRange how I spent my time on {Date}
+GetTimersRange how I spent my day {Date}
+GetTimersRange how I spent my day on {Date}
+GetTimersRange what I did {Date}
+GetTimersRange what I did on {Date}

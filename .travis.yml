@@ -11,7 +11,7 @@ script:
 
 deploy:
   skip_cleanup: true
-  zip: src
+  zip: './'
   provider: lambda
   region: 'eu-west-1'
   function_name: 'toggl'

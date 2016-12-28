@@ -63,11 +63,28 @@ var handlers = {
       var speechOutput = ''
       if( ! json.data) {
         speechOutput = 'No timer running'
+        self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
       }
       else {
-        speechOutput = 'Timer ' + json.data.description + ' started ' + moment(json.data.start).fromNow()
+        var duration = humanise(moment().unix() + json.data.duration)
+
+        if(json.data.pid === undefined){
+          speechOutput = duration + ' on undefined'
+          self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
+          return true
+        }
+        else {
+          // Make a request to the Toggl API
+          // @todo Use promises
+          toggl.get('projects/' + json.data.pid, function(err, json) {
+            // @todo Better error handling
+            if(err) return console.error(err)
+
+            speechOutput = duration + ' on ' + json.data.name
+            self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
+          })
+        }
       }
-      self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
     })
   },
   'GetTimersRange': function(intent, session, response) {

@@ -52,9 +52,6 @@ var handlers = {
   'LaunchRequest': function() {
     this.emit('GetCurrentTimer')
   },
-  'CurrentTimerIntent': function() {
-    this.emit('GetCurrentTimer')
-  },
   'GetCurrentTimer': function () {
     var self = this
 

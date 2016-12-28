@@ -1,6 +1,6 @@
-CurrentTimerIntent current
-CurrentTimerIntent present
-CurrentTimerIntent latest
+GetCurrentTimer current
+GetCurrentTimer present
+GetCurrentTimer latest
 GetTimersRange {Date}
 GetTimersRange how I spent {Date}
 GetTimersRange how I spent my time {Date}

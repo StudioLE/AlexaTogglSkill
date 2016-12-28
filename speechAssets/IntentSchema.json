@@ -1,7 +1,7 @@
 {
   "intents": [
     {
-      "intent": "CurrentTimerIntent"
+      "intent": "GetCurrentTimer"
     },
     {
       "intent": "GetTimersRange",

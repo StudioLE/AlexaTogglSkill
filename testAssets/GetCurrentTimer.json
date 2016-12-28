@@ -18,7 +18,7 @@
     "requestId": "amzn1.echo-api.request.[unique-value-here]",
     "intent": {
       "slots": {},
-      "name": "CurrentTimerIntent"
+      "name": "GetCurrentTimer"
     }
   },
   "context": {

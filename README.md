@@ -1,5 +1,7 @@
 # An Alexa skill to interact with Toggl
 
+[![Build Status](https://travis-ci.org/StudioLE/AlexaTogglSkill.svg?branch=master)](https://travis-ci.org/StudioLE/AlexaTogglSkill)
+
 ## Install
 
 1.  Zip the contents of the `src` directory and upload to [AWS Lambda](console.aws.amazon.com/lambda/home).

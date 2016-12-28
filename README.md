@@ -21,6 +21,7 @@ Alexa, ask Toggl for current timer
 Alexa, ask Toggl how I spent my time today
 Alexa, ask Toggl what I did last sunday
 Alexa, ask Toggl to stop timer
+Alexa, ask Toggl to start timer
 ```
 
 ## Roadmap / Future Features

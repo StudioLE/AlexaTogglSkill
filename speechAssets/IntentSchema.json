@@ -16,6 +16,9 @@
       "intent": "StopCurrentTimer"
     },
     {
+      "intent": "StartTimer"
+    },
+    {
       "intent": "AMAZON.HelpIntent"
     },
     {

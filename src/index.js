@@ -172,6 +172,29 @@ var handlers = {
       }
     })
   },
+  'StartTimer': function () {
+    var self = this
+
+    // Make a request to the Toggl API
+    toggl.post('time_entries/start', {
+        time_entry: {
+          description: 'Initiated with Alexa Skill',
+          created_with: 'Alexa'
+        }
+      }, function(err, json) {
+      // @todo Better error handling
+      if(err) return console.error(err)
+      // Create speech output
+      var speechOutput = ''
+      if( ! json.data) {
+        speechOutput = 'No timer running'
+      }
+      else {
+        speechOutput = 'Timer started'
+      }
+      self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
+    })
+  },
   'AMAZON.HelpIntent': function() {
     var speechOutput = this.t('HELP_MESSAGE')
     var reprompt = this.t('HELP_MESSAGE')

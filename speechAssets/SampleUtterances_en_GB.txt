@@ -11,3 +11,5 @@ GetTimersRange what I did {Date}
 GetTimersRange what I did on {Date}
 StopCurrentTimer stop
 StopCurrentTimer stop timer
+StartTimer start
+StartTimer start timer

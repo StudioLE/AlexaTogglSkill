@@ -44,8 +44,14 @@ var handlers = {
       // @todo Better error handling
       if(err) return console.error(err)
       // Create speech output
-      var speechOutput = 'Timer ' + json.data.description + ' started ' + moment(json.data.start).fromNow()
-      self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), json.data.description)
+      var speechOutput = ''
+      if( ! json.data) {
+        speechOutput = 'No timer running'
+      }
+      else {
+        speechOutput = 'Timer ' + json.data.description + ' started ' + moment(json.data.start).fromNow()
+      }
+      self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
     })
   },
   'GetTimersRange': function() {

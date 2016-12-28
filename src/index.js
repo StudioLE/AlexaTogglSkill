@@ -125,6 +125,11 @@ var handlers = {
       var speech = []
 
       async.each(projects, function(project, callback) {
+        if(project.pid === undefined){
+          speech.push(humanise(project.duration) + ' on undefined')
+          return callback()
+        }
+
         // Make a request to the Toggl API
         // @todo A get request in a loop... May want to convert to promises instead...
         toggl.get('projects/' + project.pid, function(err, json) {

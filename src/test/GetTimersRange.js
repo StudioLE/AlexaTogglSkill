@@ -6,7 +6,7 @@ var index = require('../index')
 var context = require('aws-lambda-mock-context')
 var ctx = context()
 
-var intentTestJSON = require('../../speechAssets/GetTimersRange')
+var intentTestJSON = require('../../testAssets/GetTimersRange')
 
 describe('GetTimersRange', function() {
   var speechResponse = null

@@ -6,7 +6,7 @@ var index = require('../index')
 var context = require('aws-lambda-mock-context')
 var ctx = context()
 
-var intentTestJSON = require('../../speechAssets/StopCurrentTimer')
+var intentTestJSON = require('../../testAssets/StopCurrentTimer')
 
 describe('StopCurrentTimer', function() {
   var speechResponse = null

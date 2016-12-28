@@ -27,6 +27,8 @@
   "devDependencies": {
     "aws-lambda-mock-context": "^3.0.1",
     "chai": "^3.5.0",
+    "gulp": "^3.9.1",
+    "gulp-zip": "^3.2.0",
     "mocha": "^3.2.0"
   }
 }

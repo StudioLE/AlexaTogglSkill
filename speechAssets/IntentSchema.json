@@ -13,6 +13,9 @@
       ]
     },
     {
+      "intent": "StopCurrentTimer"
+    },
+    {
       "intent": "AMAZON.HelpIntent"
     },
     {

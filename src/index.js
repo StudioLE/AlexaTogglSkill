@@ -33,6 +33,12 @@ moment.updateLocale('en', {
   }
 })
 
+var humanise = function(duration) {
+  return humanizeDuration(duration * 1000, {
+    delimiter: ' ', largest: 2
+  })
+}
+
 exports.handler = function(event, context, callback) {
   var alexa = Alexa.handler(event, context)
   alexa.APP_ID = APP_ID
@@ -123,7 +129,7 @@ var handlers = {
         // @todo A get request in a loop... May want to convert to promises instead...
         toggl.get('projects/' + project.pid, function(err, json) {
           if(err) return callback(err)
-          speech.push(humanizeDuration(project.duration * 1000, { delimiter: ' ', largest: 2 }) + ' on ' + json.data.name)
+          speech.push(humanise(project.duration) + ' on ' + json.data.name)
           callback()
         })
       }, function(err) {
@@ -135,6 +141,30 @@ var handlers = {
 
         self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
       })
+    })
+  },
+  'StopCurrentTimer': function () {
+    var self = this
+
+    // Make a request to the Toggl API
+    toggl.get('time_entries/current', function(err, json) {
+      // @todo Better error handling
+      if(err) return console.error(err)
+      // Create speech output
+      var speechOutput = ''
+      if( ! json.data) {
+        speechOutput = 'No timer running'
+        self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
+      }
+      else {
+        // @todo Nested functions are bad, switch to async waterfall
+        toggl.put('time_entries/' + json.data.id + '/stop', function(err, json) {
+          // @todo Better error handling
+          if(err) return console.error(err)
+          speechOutput = json.data.description + ' was stopped after ' + humanise(json.data.duration)
+          self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
+        })
+      }
     })
   },
   'AMAZON.HelpIntent': function() {

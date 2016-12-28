@@ -9,3 +9,5 @@ GetTimersRange how I spent my day {Date}
 GetTimersRange how I spent my day on {Date}
 GetTimersRange what I did {Date}
 GetTimersRange what I did on {Date}
+StopCurrentTimer stop
+StopCurrentTimer stop timer

@@ -4,15 +4,16 @@ var https = require('https')
 var TOGGL_API_KEY = process.env.TOGGL_API_KEY
 
 module.exports = {
-  get: function(endpoint, callback) {
+
+  request: function(method, endpoint, callback) {
     var req = https.get({
       hostname: 'www.toggl.com',
       path: '/api/v8/' + endpoint,
-      method: 'GET',
+      method: method,
       headers: {
         'Content-Type': 'application/json; charset=utf-8',
         'Authorization': 'Basic ' + new Buffer(TOGGL_API_KEY + ':api_token').toString('base64')
-      }   
+      }
     }, function(res) {
       var body = ''
       res.on('data', function(chunk) {
@@ -29,5 +30,14 @@ module.exports = {
       callback(err)
     })
     req.end()
+  },
+
+  get: function(endpoint, callback) {
+    return this.request('GET', endpoint, callback)
+  },
+
+  put: function(endpoint, callback) {
+    return this.request('PUT', endpoint, callback)
   }
+
 }

@@ -20,6 +20,7 @@ The following utterances should now work:
 Alexa, ask Toggl for current timer
 Alexa, ask Toggl how I spent my time today
 Alexa, ask Toggl what I did last sunday
+Alexa, ask Toggl to stop timer
 ```
 
 ## Roadmap / Future Features

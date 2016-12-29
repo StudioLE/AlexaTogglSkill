@@ -9,6 +9,7 @@ var ctx = context()
 var intentTestJSON = require('../../testAssets/GetCurrentTimer')
 
 describe('GetCurrentTimer', function() {
+  this.timeout(5000)
   var speechResponse = null
   var speechError = null
 
@@ -49,6 +50,6 @@ describe('GetCurrentTimer', function() {
   })
 
   after(function(){
-    // console.log('Output: ', speechResponse)
+    if(process.env.DEBUG) console.log('Output: ', speechResponse)
   })
 })

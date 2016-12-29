@@ -5,6 +5,7 @@
     "module": false,
     "exports": false,
     "require": false,
+    "Promise": false,
     "console": false,
     "before": false,
     "after": false,

@@ -8,16 +8,16 @@ var _ = require('lodash')
 var async = require('async')
 var toSentence = require('array-to-sentence')
 var toggl = require('./lib/toggl')
-// @todo Replace with your app ID (OPTIONAL)
-var APP_ID = undefined
+var APP_ID = process.env.APP_ID
 
 exports.lang = {
   'en-GB': {
     'translation': {
-      'SKILL_NAME' : 'Toggl',
-      'HELP_MESSAGE' : 'You can say toggl, or, you can say exit... What can I help you with?',
-      'HELP_REPROMPT' : 'What can I help you with?',
-      'STOP_MESSAGE' : 'Goodbye!'
+      'SKILL_NAME': 'Toggl',
+      'HELP_MESSAGE': 'You can say toggl, or, you can say exit... What can I help you with?',
+      'HELP_REPROMPT': 'What can I help you with?',
+      'STOP_MESSAGE': 'Goodbye!',
+      'NO_TIMER': 'No timer running'
     }
   }
 }
@@ -53,39 +53,50 @@ var handlers = {
   'LaunchRequest': function() {
     this.emit('GetCurrentTimer')
   },
+  'NoTimer': function() {
+    var speechOutput = 'No timer running'
+    this.emit(':tellWithCard', speechOutput, this.t('SKILL_NAME'), speechOutput)
+  },
+  'Error': function(err) {
+      console.error(err)
+      this.emit(':tellWithCard', 'There was an error', this.t('SKILL_NAME'), 'There was an error')
+  },
   'GetCurrentTimer': function () {
     var self = this
+    var duration
 
-    // Make a request to the Toggl API
-    toggl.get('time_entries/current', function(err, json) {
-      // @todo Better error handling
-      if(err) return console.error(err)
-      // Create speech output
-      var speechOutput = ''
+    // Get the current time entry from the API
+    toggl.get('time_entries/current')
+    .then(function(json) {
+      // If there is no timer running then emit NoTimer intent
       if( ! json.data) {
-        speechOutput = 'No timer running'
-        self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
+        self.emit('NoTimer')
+        return Promise.reject()
       }
+
+      // Convert the duration to a readable string
+      duration = humanise(moment().unix() + json.data.duration)
+
+      // If the pid is undefined then just say so
+      if(json.data.pid === undefined) {
+        return Promise.resolve({
+          data: {
+            name: 'undefined'
+          }
+        })
+      }
+      // Else get the project name from the API and return its promise
       else {
-        var duration = humanise(moment().unix() + json.data.duration)
-
-        if(json.data.pid === undefined){
-          speechOutput = duration + ' on undefined'
-          self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
-          return true
-        }
-        else {
-          // Make a request to the Toggl API
-          // @todo Use promises
-          toggl.get('projects/' + json.data.pid, function(err, json) {
-            // @todo Better error handling
-            if(err) return console.error(err)
-
-            speechOutput = duration + ' on ' + json.data.name
-            self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
-          })
-        }
+        return toggl.get('projects/' + json.data.pid)
       }
+    })
+    .then(function(json) {
+      var speechOutput = duration + ' on ' + json.data.name
+      self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
+    })
+    .catch(function(err) {
+      console.error(err)
+      self.emit('Error')
     })
   },
   'GetTimersRange': function(intent, session, response) {
@@ -106,11 +117,10 @@ var handlers = {
     })
 
     // Make a request to the Toggl API
-    toggl.get(req, function(err, json) {
-      // @todo Better error handling
-      if(err) return console.error(err)
+    toggl.get(req)
+    .then(function(json) {
 
-      // Group entried by project id
+      // Group entries by project id
       var projects = _.groupBy(json, 'pid')
 
       // Loop through each project
@@ -124,7 +134,7 @@ var handlers = {
             // Add the duration to the total
             total += entry.duration
           }
-          // Else still running
+          // Else entry is still running
           else {
             // Figure out the time elapsed since it started
             // Add the duration to the total
@@ -139,52 +149,61 @@ var handlers = {
 
       var speech = []
 
-      async.each(projects, function(project, callback) {
-        if(project.pid === undefined){
-          speech.push(humanise(project.duration) + ' on undefined')
-          return callback()
-        }
+      return new Promise(function(resolve, reject) {
+        // Loop through each project
+        async.each(projects, function(project, callback) {
+          if(project.pid === undefined){
+            speech.push(humanise(project.duration) + ' on undefined')
+            return callback()
+          }
 
-        // Make a request to the Toggl API
-        // @todo A get request in a loop... May want to convert to promises instead...
-        toggl.get('projects/' + project.pid, function(err, json) {
-          if(err) return callback(err)
-          speech.push(humanise(project.duration) + ' on ' + json.data.name)
-          callback()
+          // Get the project name from the API
+          // @todo A get request in a loop... May want to find a better method...
+          toggl.get('projects/' + project.pid)
+          .then(function(json) {
+            speech.push(humanise(project.duration) + ' on ' + json.data.name)
+            callback()
+          })
+          .catch(function(err) {
+            return callback(err)
+          })
+        }, function(err) {
+          if(err) return reject(err)
+          return resolve(speech)
         })
-      }, function(err) {
-        // @todo Better error handling
-        if(err) return console.error(err)
-
-        // Create speech output
-        var speechOutput = moment(date).calendar() + ', you spent ' + toSentence(speech)
-
-        self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
       })
+    })
+    .then(function(speech) {
+      var speechOutput = moment(date).calendar() + ', you spent ' + toSentence(speech)
+      self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
+    })
+    .catch(function(err) {
+      console.error(err)
+      self.emit('Error')
     })
   },
   'StopCurrentTimer': function () {
     var self = this
 
     // Make a request to the Toggl API
-    toggl.get('time_entries/current', function(err, json) {
-      // @todo Better error handling
-      if(err) return console.error(err)
-      // Create speech output
-      var speechOutput = ''
+    toggl.get('time_entries/current')
+    .then(function(json) {
+      // If there is no timer running then emit NoTimer intent
       if( ! json.data) {
-        speechOutput = 'No timer running'
-        self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
+        self.emit('NoTimer')
+        return Promise.reject()
       }
-      else {
-        // @todo Nested functions are bad, switch to async waterfall
-        toggl.put('time_entries/' + json.data.id + '/stop', function(err, json) {
-          // @todo Better error handling
-          if(err) return console.error(err)
-          speechOutput = json.data.description + ' was stopped after ' + humanise(json.data.duration)
-          self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
-        })
-      }
+      // Else stop the timer with the API and return its promise
+      return toggl.put('time_entries/' + json.data.id + '/stop')
+    })
+    .then(function(json) {
+      // @todo For consistency, should we include the project name rather than the description?
+      var speechOutput = json.data.description + ' was stopped after ' + humanise(json.data.duration)
+      self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
+    })
+    .catch(function(err) {
+      console.error(err)
+      self.emit('Error')
     })
   },
   'StartTimer': function () {
@@ -192,22 +211,22 @@ var handlers = {
 
     // Make a request to the Toggl API
     toggl.post('time_entries/start', {
-        time_entry: {
-          description: 'Initiated with Alexa Skill',
-          created_with: 'Alexa'
-        }
-      }, function(err, json) {
-      // @todo Better error handling
-      if(err) return console.error(err)
-      // Create speech output
-      var speechOutput = ''
+      time_entry: {
+        description: 'Initiated with Alexa Skill',
+        created_with: 'Alexa'
+      }
+    })
+    .then(function(json) {
+      // If there is no timer running then there must have been an error
       if( ! json.data) {
-        speechOutput = 'No timer running'
+        return Promise.reject()
       }
-      else {
-        speechOutput = 'Timer started'
-      }
+      var speechOutput = 'Timer started'
       self.emit(':tellWithCard', speechOutput, self.t('SKILL_NAME'), speechOutput)
+    })
+    .catch(function(err) {
+      console.error(err)
+      self.emit('Error')
     })
   },
   'AMAZON.HelpIntent': function() {

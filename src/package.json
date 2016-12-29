@@ -21,6 +21,7 @@
     "alexa-sdk": "^1.0.6",
     "array-to-sentence": "^1.1.0",
     "async": "^2.1.4",
+    "dotenv": "^2.0.0",
     "humanize-duration": "^3.10.0",
     "lodash": "^4.17.3",
     "moment": "^2.17.1",

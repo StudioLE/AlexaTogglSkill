@@ -1,4 +1,5 @@
 'use strict'
+require('dotenv').config()
 var Alexa = require('alexa-sdk')
 var moment = require('moment')
 var humanizeDuration = require('humanize-duration')

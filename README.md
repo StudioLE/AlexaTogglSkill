@@ -26,6 +26,4 @@ Alexa, ask Toggl to start timer
 
 ## Roadmap / Future Features
 
-This is very much alpha software at present, it's currently only configured to work with `en-GB` language, but it will only take a couple more lines of code to get it working in `en-US` and then `de-DE`. 
-
-Next step will be adding POST methods so you can start and stop timers.
+The skill is currently only configured to work in the `en-GB` language, but it will only take a couple more lines of code to get it working in `en-US` and even `de-DE`. 
